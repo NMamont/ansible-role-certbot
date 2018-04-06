@@ -5,6 +5,7 @@ certbot_auto_renew_user: "{{ ansible_user }}"
 certbot_auto_renew_hour: 3
 certbot_auto_renew_minute: 30
 certbot_auto_renew_options: "--quiet --no-self-upgrade"
+certbot_auto_renew_options_dns_challenge: "--quiet --no-self-upgrade --manual-public-ip-logging-ok"
 
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: no
@@ -18,6 +19,7 @@ certbot_certs: []
   # - domains:
   #     - example3.com
 certbot_create_command: "{{ certbot_script }} certonly --standalone --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} -d {{ cert_item.domains | join(',') }}"
+certbot_create_command_dns_challenge:  "{{ certbot_script }} certonly --manual --preferred-challenges=dns --manual-auth-hook authenticator.sh --manual-cleanup-hook cleanup.sh --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} --manual-public-ip-logging-ok -d {{ cert_item.domains | join(',') }}"
 certbot_create_standalone_stop_services:
   - nginx
   # - apache

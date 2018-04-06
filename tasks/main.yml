@@ -15,5 +15,20 @@
   loop_control:
     loop_var: cert_item
 
+- include_tasks: create-cert-with-CF_DNS.yml
+  with_items: "{{ certbot_certs }}"
+  when:
+    - certbot_create_if_missing
+    - certbot_create_method == 'dns_challenge'
+  loop_control:
+    loop_var: cert_item
+
 - import_tasks: renew-cron.yml
-  when: certbot_auto_renew
+  when:
+    - certbot_auto_renew
+    - certbot_create_method == 'standalone'
+
+- import_tasks: renew-cron-dns_challange.yml
+  when:
+    - certbot_auto_renew
+    - certbot_create_method == 'dns_challenge'
